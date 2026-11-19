@@ -1,12 +1,12 @@
-"""Benchmark ECDSA-P256 and ML-DSA-44 signing and signature verification.
+"""
+November 2026 
+
+Benchmark ECDSA-P256 and ML-DSA-44 signing and signature verification.
 
 Each operation is warmed up and then timed 10,000 times by default. Key
 generation and test-message setup happen outside the timed sections.
 """
-import gc
-import math
-import statistics
-import time
+import gc, math, statistics, time
 import oqs
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
@@ -118,7 +118,7 @@ def print_table(results): #Printing as a table for readability
         for ops, stats in ops.items():
             print(f"{scheme:<12} {ops:<12} {stats['median_us']:<12.2f} {stats['p99_us']:<12.2f}")
 
-            
+
 if __name__ == "__main__":
     print_table(run_benchmarks())
 
