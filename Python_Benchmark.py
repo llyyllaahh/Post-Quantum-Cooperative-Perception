@@ -13,7 +13,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 
 
 def benchmark(fn, iters=10000, warmup=1000):
-    """Time a zero-argument function and return median and p99 in microseconds."""
+    #Time a zero-argument function and return median and p99 in microseconds.
     if iters <= 0:
         raise ValueError("iters must be greater than zero")
     if warmup < 0:
@@ -29,17 +29,17 @@ def benchmark(fn, iters=10000, warmup=1000):
 
     try:
         for i in range(iters):
-            start = time.perf_counter_ns()
-            fn()
-            end = time.perf_counter_ns()
+            start = time.perf_counter_ns() #starting the timer
+            fn()                           
+            end = time.perf_counter_ns()   #stopping the timer
             times[i] = end - start
     finally:
         if gc_was_enabled:
             gc.enable()
 
     times.sort()
-    median = statistics.median(times)
-    p99 = times[math.ceil(0.99 * iters) - 1]
+    median = statistics.median(times)         #gathering the median for the sorted times
+    p99 = times[math.ceil(0.99 * iters) - 1] #gathering the 99th percentile for the sorted times
 
     return {
         "median_us": median / 1000,
@@ -47,7 +47,7 @@ def benchmark(fn, iters=10000, warmup=1000):
     }
 
 def ecdsa_p256(message):
-    """Sign a message with ECDSA-P256 and verify the signature."""
+    #Sign a message with ECDSA-P256 and verify the signature
     alg = ec.ECDSA(hashes.SHA256())
     private_key = ec.generate_private_key(ec.SECP256R1())
     public_key = private_key.public_key()
@@ -62,7 +62,7 @@ def ecdsa_p256(message):
     }
 
 def oqs_sig_ops(algorithm, message, iters, warmup):
-    """Benchmark signing and verification for an OQS signature algorithm."""
+    #Benchmark signing and verification for an OQS signature algorithm.
     if algorithm not in oqs.get_enabled_sig_mechanisms():
         raise ValueError(f"{algorithm} is not enabled in the installed liboqs")
 
@@ -81,7 +81,7 @@ def oqs_sig_ops(algorithm, message, iters, warmup):
             ),
         }
 def oqs_kem_ops(algorithm, iters, warmup):
-    """Benchmark key generation, encapuslation, and decapsulation for an OQS KEM algorithm."""
+    #Benchmark key generation, encapuslation, and decapsulation for an OQS KEM algorithm.
     if algorithm not in oqs.get_enabled_kem_mechanisms():
         raise ValueError(f"{algorithm} is not enabled in the installed liboqs")
 
@@ -117,6 +117,8 @@ def print_table(results): #Printing as a table for readability
     for scheme, ops in results.items():
         for ops, stats in ops.items():
             print(f"{scheme:<12} {ops:<12} {stats['median_us']:<12.2f} {stats['p99_us']:<12.2f}")
+
+            
 if __name__ == "__main__":
     print_table(run_benchmarks())
 
